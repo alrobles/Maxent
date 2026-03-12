@@ -12,6 +12,9 @@ on:
       - 'cpp/**'
       - '.github/workflows/cpp-tests.yml'
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
