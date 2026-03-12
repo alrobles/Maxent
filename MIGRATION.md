@@ -89,6 +89,22 @@ This document describes the ongoing migration of Maxent from Java to C++ with R 
 - ✅ NAMESPACE updated with new exports
 - ✅ DESCRIPTION bumped to v0.5.0
 
+### Phase 6: Model Interpretation & Diagnostics ✅ (Completed)
+
+**C++ Core:**
+- ✅ `VariableImportance` class – permutation importance and percent contribution
+- ✅ `ResponseCurve` class – marginal and fixed response curve generation
+- ✅ `Clamping` class – clamp grids to training range, clamping indicator grid
+- ✅ `Novelty` class – MESS analysis, MoD grid, simplified range-based MESS
+- ✅ C++ unit tests (`test_variable_importance.cpp`, `test_response_curve.cpp`, `test_clamping.cpp`, `test_novelty.cpp`)
+
+**R Package (maxentcpp):**
+- ✅ Rcpp bindings (`rcpp_model_diagnostics.cpp`)
+- ✅ R wrapper functions (`model_diagnostics.R`)
+- ✅ Unit tests with testthat (`test-model-diagnostics.R`)
+- ✅ NAMESPACE updated with new exports
+- ✅ DESCRIPTION bumped to v0.6.0
+
 ## Directory Structure
 
 ```
@@ -105,7 +121,11 @@ Maxent/
 │   │   ├── csv_writer.hpp
 │   │   ├── grid_io.hpp
 │   │   ├── model_evaluation.hpp
-│   │   └── projection.hpp
+│   │   ├── projection.hpp
+│   │   ├── variable_importance.hpp
+│   │   ├── response_curve.hpp
+│   │   ├── clamping.hpp
+│   │   └── novelty.hpp
 │   ├── src/                 # Implementation files (stubs; code is header-only)
 │   │   ├── grid_dimension.cpp
 │   │   ├── sample.cpp
@@ -116,7 +136,11 @@ Maxent/
 │   │   ├── csv_writer.cpp
 │   │   ├── grid_io.cpp
 │   │   ├── model_evaluation.cpp
-│   │   └── projection.cpp
+│   │   ├── projection.cpp
+│   │   ├── variable_importance.cpp
+│   │   ├── response_curve.cpp
+│   │   ├── clamping.cpp
+│   │   └── novelty.cpp
 │   ├── tests/               # C++ unit tests
 │   │   ├── test_grid.cpp
 │   │   ├── test_sample.cpp
@@ -127,7 +151,11 @@ Maxent/
 │   │   ├── test_csv_writer.cpp
 │   │   ├── test_grid_io.cpp
 │   │   ├── test_model_evaluation.cpp
-│   │   └── test_projection.cpp
+│   │   ├── test_projection.cpp
+│   │   ├── test_variable_importance.cpp
+│   │   ├── test_response_curve.cpp
+│   │   ├── test_clamping.cpp
+│   │   └── test_novelty.cpp
 │   └── CMakeLists.txt       # Build configuration
 │
 ├── R-package/               # R package with Rcpp bindings
@@ -137,6 +165,7 @@ Maxent/
 │   │   ├── rcpp_featured_space.cpp
 │   │   ├── rcpp_grid_io.cpp
 │   │   ├── rcpp_model_evaluation.cpp
+│   │   ├── rcpp_model_diagnostics.cpp
 │   │   ├── Makevars
 │   │   └── Makevars.win
 │   ├── R/                   # R code
@@ -144,14 +173,16 @@ Maxent/
 │   │   ├── features.R
 │   │   ├── featured_space.R
 │   │   ├── grid_io.R
-│   │   └── model_evaluation.R
+│   │   ├── model_evaluation.R
+│   │   └── model_diagnostics.R
 │   ├── tests/               # R unit tests
 │   │   └── testthat/
 │   │       ├── test-maxent.R
 │   │       ├── test-features.R
 │   │       ├── test-featured-space.R
 │   │       ├── test-grid-io.R
-│   │       └── test-model-evaluation.R
+│   │       ├── test-model-evaluation.R
+│   │       └── test-model-diagnostics.R
 │   ├── man/                 # Documentation
 │   ├── DESCRIPTION
 │   ├── NAMESPACE
@@ -461,10 +492,12 @@ Actual performance will vary based on dataset size and hardware.
 - [x] FeaturedSpace and model training
 - [x] Spatial data I/O (ASC, CSV)
 - [x] Model evaluation (AUC, metrics)
+- [x] Model interpretation & diagnostics
 - [ ] Complete R workflow examples
 
 ### Long-term (6-12 months)
 - [ ] All utility tools ported
+- [ ] Cross-validation and replication framework
 - [ ] Performance optimization
 - [ ] Comprehensive documentation
 - [ ] CRAN release of R package

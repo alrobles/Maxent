@@ -494,10 +494,147 @@ points_df <- do.call(rbind, lapply(samples, function(s) {
 ✅ Environmental layer metadata (Layer class)  
 ✅ Model evaluation (AUC, kappa, correlation, log-loss, squared error)  
 ✅ Spatial projection (raw, cloglog, logistic output)  
-✅ Unit tests (10 C++ test suites, R testthat tests)  
+✅ Variable importance (permutation importance, percent contribution)  
+✅ Response curves (marginal and fixed)  
+✅ Clamping (restrict variables to training range)  
+✅ Novelty detection (MESS analysis, MoD grid)  
+✅ Unit tests (14 C++ test suites, R testthat tests)  
+
+## Phase 6: Model Interpretation & Diagnostics
+
+### Variable Importance (C++)
+
+```cpp
+#include "maxent/variable_importance.hpp"
+
+// After training a model and setting up grids...
+
+// Permutation importance
+auto perm = VariableImportance::permutation_importance(
+    model, env_grids, names,
+    presence_rows, presence_cols,
+    absence_rows, absence_cols);
+
+for (const auto& r : perm)
+    std::cout << r.name << ": " << r.permutation_importance << "%" << std::endl;
+
+// Percent contribution (lambda-based)
+auto contrib = VariableImportance::percent_contribution(model, names);
+for (const auto& r : contrib)
+    std::cout << r.name << ": " << r.contribution << "%" << std::endl;
+```
+
+### Variable Importance (R)
+
+```r
+library(maxentcpp)
+
+# After training a model...
+imp <- maxent_permutation_importance(
+    model, list(g_temp, g_precip), c("temp", "precip"),
+    pres_rows, pres_cols, abs_rows, abs_cols)
+print(imp)
+# name permutation_importance
+# temp                  72.3
+# precip                27.7
+
+contrib <- maxent_percent_contribution(model, c("temp", "precip"))
+print(contrib)
+```
+
+### Response Curves (C++)
+
+```cpp
+#include "maxent/response_curve.hpp"
+
+// Marginal response curve: vary variable 0 from min to max
+auto curve = ResponseCurve::marginal(model, grids, names, 0, 100);
+
+for (const auto& pt : curve)
+    std::cout << pt.value << " → " << pt.prediction << std::endl;
+
+// Response curve with user-specified fixed values
+auto curve2 = ResponseCurve::marginal_fixed(
+    model, {15.0, 100.0}, names, 0, 0.0, 30.0, 50);
+```
+
+### Response Curves (R)
+
+```r
+# Marginal response curve
+curve <- maxent_response_curve(model, list(g_temp, g_precip),
+           c("temp", "precip"), var_index = 0, n_steps = 100)
+plot(curve$value, curve$prediction, type = "l",
+     xlab = "Temperature", ylab = "Suitability (cloglog)")
+
+# Response with fixed values for other variables
+curve2 <- maxent_response_curve_fixed(
+    model, c(15, 100), c("temp", "precip"), 0, 0, 30, 50)
+```
+
+### Clamping (C++)
+
+```cpp
+#include "maxent/clamping.hpp"
+
+// Get training ranges
+std::vector<double> mins, maxs;
+Clamping::compute_ranges(training_grids, mins, maxs);
+
+// Clamp projection grids to training range
+auto result = Clamping::clamp(projection_grids, mins, maxs);
+// result.clamped_grids[k] – clamped version of each grid
+// result.clamp_grid – shows total clamping magnitude per cell
+```
+
+### Clamping (R)
+
+```r
+# Compute training ranges
+ranges <- maxent_variable_ranges(list(g_temp, g_precip))
+
+# Clamp to training range
+result <- maxent_clamp(list(g_temp_new, g_precip_new),
+                       ranges$min, ranges$max)
+clamped_grids <- result$clamped_grids
+clamp_mat <- maxent_grid_to_matrix(result$clamp_grid)
+image(clamp_mat, main = "Clamping magnitude")
+```
+
+### MESS Novelty Detection (C++)
+
+```cpp
+#include "maxent/novelty.hpp"
+
+// Full MESS with reference point values
+std::vector<std::vector<double>> refs = {temp_training, precip_training};
+auto mess = Novelty::mess(env_grids, refs, names);
+// mess.mess_grid – negative values = novel environments
+// mess.mod_grid  – which variable is most dissimilar (1-based)
+
+// Simplified MESS from min/max ranges
+auto mess2 = Novelty::mess_range(env_grids, var_mins, var_maxs);
+```
+
+### MESS Novelty Detection (R)
+
+```r
+# Full MESS
+result <- maxent_mess(list(g_temp, g_precip),
+            list(temp_training_vals, precip_training_vals),
+            c("temp", "precip"))
+mess_mat <- maxent_grid_to_matrix(result$mess_grid)
+mod_mat  <- maxent_grid_to_matrix(result$mod_grid)
+image(mess_mat, main = "MESS (negative = novel)")
+
+# Simplified from ranges
+result2 <- maxent_mess_range(list(g_temp, g_precip),
+             c(min_temp, min_precip), c(max_temp, max_precip))
+```
 
 ## Coming Next
 
+⏳ Cross-validation and replication framework  
 ⏳ Complete end-to-end workflow examples  
 ⏳ Performance optimization  
 ⏳ CRAN release of R package
