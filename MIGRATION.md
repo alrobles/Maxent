@@ -73,12 +73,21 @@ This document describes the ongoing migration of Maxent from Java to C++ with R 
 - ✅ NAMESPACE updated with new exports
 - ✅ DESCRIPTION bumped to v0.4.0
 
-### Phase 5: Model Evaluation (Planned)
+### Phase 5: Model Evaluation ✅ (Completed)
 
-- [ ] AUC calculation
-- [ ] Model evaluation metrics
-- [ ] Prediction on new data
-- [ ] Spatial projection
+**C++ Core:**
+- ✅ `ModelEvaluation` class – AUC, kappa, correlation, log-loss, squared error, misclassification
+- ✅ `EvalResult` struct for aggregate evaluation metrics
+- ✅ `Projection` class – spatial projection (raw, cloglog, logistic output)
+- ✅ Extract predictions at sample locations
+- ✅ C++ unit tests (`test_model_evaluation.cpp`, `test_projection.cpp`)
+
+**R Package (maxentcpp):**
+- ✅ Rcpp bindings (`rcpp_model_evaluation.cpp`)
+- ✅ R wrapper functions (`model_evaluation.R`)
+- ✅ Unit tests with testthat (`test-model-evaluation.R`)
+- ✅ NAMESPACE updated with new exports
+- ✅ DESCRIPTION bumped to v0.5.0
 
 ## Directory Structure
 
@@ -94,7 +103,9 @@ Maxent/
 │   │   ├── layer.hpp
 │   │   ├── csv_reader.hpp
 │   │   ├── csv_writer.hpp
-│   │   └── grid_io.hpp
+│   │   ├── grid_io.hpp
+│   │   ├── model_evaluation.hpp
+│   │   └── projection.hpp
 │   ├── src/                 # Implementation files (stubs; code is header-only)
 │   │   ├── grid_dimension.cpp
 │   │   ├── sample.cpp
@@ -103,7 +114,9 @@ Maxent/
 │   │   ├── layer.cpp
 │   │   ├── csv_reader.cpp
 │   │   ├── csv_writer.cpp
-│   │   └── grid_io.cpp
+│   │   ├── grid_io.cpp
+│   │   ├── model_evaluation.cpp
+│   │   └── projection.cpp
 │   ├── tests/               # C++ unit tests
 │   │   ├── test_grid.cpp
 │   │   ├── test_sample.cpp
@@ -112,7 +125,9 @@ Maxent/
 │   │   ├── test_layer.cpp
 │   │   ├── test_csv_reader.cpp
 │   │   ├── test_csv_writer.cpp
-│   │   └── test_grid_io.cpp
+│   │   ├── test_grid_io.cpp
+│   │   ├── test_model_evaluation.cpp
+│   │   └── test_projection.cpp
 │   └── CMakeLists.txt       # Build configuration
 │
 ├── R-package/               # R package with Rcpp bindings
@@ -121,19 +136,22 @@ Maxent/
 │   │   ├── rcpp_features.cpp
 │   │   ├── rcpp_featured_space.cpp
 │   │   ├── rcpp_grid_io.cpp
+│   │   ├── rcpp_model_evaluation.cpp
 │   │   ├── Makevars
 │   │   └── Makevars.win
 │   ├── R/                   # R code
 │   │   ├── maxent.R
 │   │   ├── features.R
 │   │   ├── featured_space.R
-│   │   └── grid_io.R
+│   │   ├── grid_io.R
+│   │   └── model_evaluation.R
 │   ├── tests/               # R unit tests
 │   │   └── testthat/
 │   │       ├── test-maxent.R
 │   │       ├── test-features.R
 │   │       ├── test-featured-space.R
-│   │       └── test-grid-io.R
+│   │       ├── test-grid-io.R
+│   │       └── test-model-evaluation.R
 │   ├── man/                 # Documentation
 │   ├── DESCRIPTION
 │   ├── NAMESPACE
@@ -442,7 +460,7 @@ Actual performance will vary based on dataset size and hardware.
 ### Medium-term (3-6 months)
 - [x] FeaturedSpace and model training
 - [x] Spatial data I/O (ASC, CSV)
-- [ ] Model evaluation (AUC, metrics)
+- [x] Model evaluation (AUC, metrics)
 - [ ] Complete R workflow examples
 
 ### Long-term (6-12 months)

@@ -77,8 +77,10 @@ This package is under active development. Current status:
 - [x] Spatial data I/O (ESRI ASCII .asc read/write)
 - [x] CSV reader/writer (occurrence data, SWD files)
 - [x] Environmental layer metadata (Layer class)
-- [ ] Model evaluation (AUC, metrics) – Phase 5
-- [ ] Spatial projection – Phase 5
+- [x] Model evaluation (AUC, kappa, correlation, log-loss, metrics)
+- [x] Spatial projection (raw, cloglog, logistic output)
+- [ ] Complete end-to-end workflow examples
+- [ ] CRAN release
 
 ## Contributing
 
