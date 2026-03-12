@@ -25,6 +25,12 @@ target_link_libraries(test_csv_writer maxent)
 add_executable(test_grid_io test_grid_io.cpp)
 target_link_libraries(test_grid_io maxent)
 
+add_executable(test_model_evaluation test_model_evaluation.cpp)
+target_link_libraries(test_model_evaluation maxent)
+
+add_executable(test_projection test_projection.cpp)
+target_link_libraries(test_projection maxent)
+
 # Add tests
 add_test(NAME GridTest COMMAND test_grid)
 add_test(NAME SampleTest COMMAND test_sample)
@@ -34,3 +40,5 @@ add_test(NAME LayerTest COMMAND test_layer)
 add_test(NAME CsvReaderTest COMMAND test_csv_reader)
 add_test(NAME CsvWriterTest COMMAND test_csv_writer)
 add_test(NAME GridIOTest COMMAND test_grid_io)
+add_test(NAME ModelEvaluationTest COMMAND test_model_evaluation)
+add_test(NAME ProjectionTest COMMAND test_projection)
