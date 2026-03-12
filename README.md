@@ -15,8 +15,9 @@ The codebase is being migrated from Java to modern C++17 with R bindings via Rcp
 | 1. Core Data Structures | ✅ Done | `GridDimension`, `Sample`, `Grid<T>` |
 | 2. Feature Engineering | ✅ Done | Linear, Quadratic, Product, Threshold, Hinge features |
 | 3. Core Algorithm | ✅ Done | `FeaturedSpace`, sequential training, lambda I/O |
-| 4. Spatial I/O | 🔮 Planned | GDAL integration, raster format support |
-| 5. Model Evaluation | 🔮 Planned | AUC, evaluation metrics |
+| 4. Spatial I/O | ✅ Done | ASC grid reader/writer, CSV reader/writer, Layer metadata |
+| 5. Model Evaluation | ✅ Done | AUC, evaluation metrics, spatial projection (raw/cloglog/logistic) |
+| 6. Model Interpretation | ✅ Done | Variable importance, response curves, clamping, MESS novelty detection |
 
 ### Building the C++ Core
 
