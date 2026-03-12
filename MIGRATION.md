@@ -22,14 +22,19 @@ This document describes the ongoing migration of Maxent from Java to C++ with R 
 - ✅ Unit tests with testthat
 - ✅ Documentation
 
-### Phase 2: Feature Engineering (In Progress)
+### Phase 2: Feature Engineering ✅ (Completed)
 
-**Next priorities:**
-- [ ] `Feature` abstract base class
-- [ ] `LinearFeature`, `QuadraticFeature`
-- [ ] `ProductFeature`, `ThresholdFeature`, `HingeFeature`
-- [ ] `FeatureGenerator` for automatic feature creation
-- [ ] R bindings for features
+**C++ Core:**
+- ✅ `Feature` abstract base class
+- ✅ `LinearFeature`, `QuadraticFeature`
+- ✅ `ProductFeature`, `ThresholdFeature`, `HingeFeature` (forward + reverse)
+- ✅ `FeatureGenerator` for automatic feature creation
+- ✅ C++ unit tests (`test_feature.cpp`)
+
+**R Package (maxentcpp):**
+- ✅ Rcpp bindings for all feature classes (`rcpp_features.cpp`)
+- ✅ R wrapper functions (`features.R`)
+- ✅ Unit tests with testthat (`test-features.R`)
 
 ### Phase 3: Core Algorithm (Planned)
 
@@ -60,26 +65,31 @@ Maxent/
 │   ├── include/maxent/      # Header files
 │   │   ├── grid_dimension.hpp
 │   │   ├── sample.hpp
-│   │   └── grid.hpp
+│   │   ├── grid.hpp
+│   │   └── feature.hpp
 │   ├── src/                 # Implementation files
 │   │   ├── grid_dimension.cpp
 │   │   ├── sample.cpp
 │   │   └── grid.cpp
 │   ├── tests/               # C++ unit tests
 │   │   ├── test_grid.cpp
-│   │   └── test_sample.cpp
+│   │   ├── test_sample.cpp
+│   │   └── test_feature.cpp
 │   └── CMakeLists.txt       # Build configuration
 │
 ├── R-package/               # R package with Rcpp bindings
 │   ├── src/                 # Rcpp wrapper code
 │   │   ├── rcpp_maxent.cpp
+│   │   ├── rcpp_features.cpp
 │   │   ├── Makevars
 │   │   └── Makevars.win
 │   ├── R/                   # R code
-│   │   └── maxent.R
+│   │   ├── maxent.R
+│   │   └── features.R
 │   ├── tests/               # R unit tests
 │   │   └── testthat/
-│   │       └── test-maxent.R
+│   │       ├── test-maxent.R
+│   │       └── test-features.R
 │   ├── man/                 # Documentation
 │   ├── DESCRIPTION
 │   ├── NAMESPACE
@@ -382,8 +392,8 @@ Actual performance will vary based on dataset size and hardware.
 ### Short-term (1-2 months)
 - [x] Core data structures (Sample, Grid, GridDimension)
 - [x] R package structure and basic bindings
-- [ ] Feature classes (Linear, Quadratic, Product, Threshold, Hinge)
-- [ ] R interface for features
+- [x] Feature classes (Linear, Quadratic, Product, Threshold, Hinge)
+- [x] R interface for features
 
 ### Medium-term (3-6 months)
 - [ ] FeaturedSpace and model training
