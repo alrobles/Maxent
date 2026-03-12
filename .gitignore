@@ -54,3 +54,63 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# =========================
+# C++ Build Files
+# =========================
+
+# CMake
+cpp/build/
+cpp/CMakeFiles/
+cpp/CMakeCache.txt
+cpp/cmake_install.cmake
+cpp/Makefile
+cpp/*.cmake
+cpp/Testing/
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+cpp/tests/test_grid
+cpp/tests/test_sample
+
+# =========================
+# R Package Files
+# =========================
+
+# R package build artifacts
+R-package/src/*.o
+R-package/src/*.so
+R-package/src/*.dll
+R-package/src/*.dylib
+R-package/src-i386/
+R-package/src-x64/
+R-package/*.Rcheck/
+R-package/*.tar.gz
+R-package/.Rproj.user
+R-package/.Rhistory
+R-package/.RData
+R-package/.Ruserdata
+R-package/man/*.Rd
+
+# RStudio files
+.Rproj.user
+*.Rproj
