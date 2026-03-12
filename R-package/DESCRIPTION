@@ -1,7 +1,7 @@
 Package: maxentcpp
 Type: Package
 Title: Maximum Entropy Species Distribution Modeling (C++ Implementation)
-Version: 0.2.0
+Version: 0.3.0
 Date: 2026-03-12
 Authors@R: c(
     person("Maxent", "Contributors", role = c("aut", "cre"),

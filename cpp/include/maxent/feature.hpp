@@ -100,12 +100,58 @@ public:
         return values_ ? static_cast<int>(values_->size()) : 0;
     }
 
+    /**
+     * @brief Get model expectation (weighted mean under current distribution)
+     * @return Model expectation
+     */
+    double expectation() const { return expectation_; }
+
+    /**
+     * @brief Set model expectation
+     * @param e New expectation value
+     */
+    void set_expectation(double e) { expectation_ = e; }
+
+    /**
+     * @brief Get sample expectation (mean over occurrence samples)
+     * @return Sample expectation
+     */
+    double sample_expectation() const { return sample_expectation_; }
+
+    /**
+     * @brief Set sample expectation
+     * @param e New value
+     */
+    void set_sample_expectation(double e) { sample_expectation_ = e; }
+
+    /**
+     * @brief Get sample deviation (regularization coefficient)
+     * @return Sample deviation
+     */
+    double sample_deviation() const { return sample_deviation_; }
+
+    /**
+     * @brief Set sample deviation
+     * @param d New value
+     */
+    void set_sample_deviation(double d) { sample_deviation_ = d; }
+
+    /**
+     * @brief Increase lambda by delta
+     * @param delta Amount to add to lambda
+     */
+    void increase_lambda(double delta) { lambda_ += delta; }
+
 protected:
     std::string name_;                             ///< Feature name/identifier
     double lambda_ = 0.0;                          ///< Regularization weight
     double min_ = 0.0;                             ///< Data minimum
     double max_ = 0.0;                             ///< Data maximum
     std::shared_ptr<std::vector<double>> values_;  ///< Underlying sample values
+
+    double expectation_ = 0.0;        ///< Model expectation (current distribution)
+    double sample_expectation_ = 0.0; ///< Sample expectation (occurrence points)
+    double sample_deviation_ = 0.0;   ///< Regularization term
 };
 
 /**

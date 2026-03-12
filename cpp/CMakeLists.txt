@@ -23,6 +23,7 @@ set(MAXENT_SOURCES
     src/sample.cpp
     src/grid.cpp
     src/grid_dimension.cpp
+    src/featured_space.cpp
 )
 
 # Create library
