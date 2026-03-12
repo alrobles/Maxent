@@ -57,12 +57,21 @@ This document describes the ongoing migration of Maxent from Java to C++ with R 
 - ✅ NAMESPACE updated with new exports
 - ✅ DESCRIPTION bumped to v0.3.0
 
-### Phase 4: Spatial I/O (Planned)
+### Phase 4: Spatial I/O ✅ (Completed)
 
-- [ ] GDAL integration for raster I/O
-- [ ] Support for ASC, GRD, BIL, GeoTIFF formats
-- [ ] CSV reading for occurrence data
-- [ ] R integration with raster/terra packages
+**C++ Core:**
+- ✅ `Layer` class – environmental layer metadata (type, name)
+- ✅ `CsvReader` – CSV file reader with European mode, quoted fields, SWD support
+- ✅ `CsvWriter` – column-based CSV writer with auto-header and quoting
+- ✅ `GridIO` – ESRI ASCII (.asc) grid reader/writer with decimal-comma support
+- ✅ C++ unit tests (`test_layer.cpp`, `test_csv_reader.cpp`, `test_csv_writer.cpp`, `test_grid_io.cpp`)
+
+**R Package (maxentcpp):**
+- ✅ Rcpp bindings (`rcpp_grid_io.cpp`)
+- ✅ R wrapper functions (`grid_io.R`)
+- ✅ Unit tests with testthat (`test-grid-io.R`)
+- ✅ NAMESPACE updated with new exports
+- ✅ DESCRIPTION bumped to v0.4.0
 
 ### Phase 5: Model Evaluation (Planned)
 
@@ -81,17 +90,29 @@ Maxent/
 │   │   ├── sample.hpp
 │   │   ├── grid.hpp
 │   │   ├── feature.hpp
-│   │   └── featured_space.hpp
+│   │   ├── featured_space.hpp
+│   │   ├── layer.hpp
+│   │   ├── csv_reader.hpp
+│   │   ├── csv_writer.hpp
+│   │   └── grid_io.hpp
 │   ├── src/                 # Implementation files (stubs; code is header-only)
 │   │   ├── grid_dimension.cpp
 │   │   ├── sample.cpp
 │   │   ├── grid.cpp
-│   │   └── featured_space.cpp
+│   │   ├── featured_space.cpp
+│   │   ├── layer.cpp
+│   │   ├── csv_reader.cpp
+│   │   ├── csv_writer.cpp
+│   │   └── grid_io.cpp
 │   ├── tests/               # C++ unit tests
 │   │   ├── test_grid.cpp
 │   │   ├── test_sample.cpp
 │   │   ├── test_feature.cpp
-│   │   └── test_featured_space.cpp
+│   │   ├── test_featured_space.cpp
+│   │   ├── test_layer.cpp
+│   │   ├── test_csv_reader.cpp
+│   │   ├── test_csv_writer.cpp
+│   │   └── test_grid_io.cpp
 │   └── CMakeLists.txt       # Build configuration
 │
 ├── R-package/               # R package with Rcpp bindings
@@ -99,17 +120,20 @@ Maxent/
 │   │   ├── rcpp_maxent.cpp
 │   │   ├── rcpp_features.cpp
 │   │   ├── rcpp_featured_space.cpp
+│   │   ├── rcpp_grid_io.cpp
 │   │   ├── Makevars
 │   │   └── Makevars.win
 │   ├── R/                   # R code
 │   │   ├── maxent.R
 │   │   ├── features.R
-│   │   └── featured_space.R
+│   │   ├── featured_space.R
+│   │   └── grid_io.R
 │   ├── tests/               # R unit tests
 │   │   └── testthat/
 │   │       ├── test-maxent.R
 │   │       ├── test-features.R
-│   │       └── test-featured-space.R
+│   │       ├── test-featured-space.R
+│   │       └── test-grid-io.R
 │   ├── man/                 # Documentation
 │   ├── DESCRIPTION
 │   ├── NAMESPACE
@@ -417,7 +441,7 @@ Actual performance will vary based on dataset size and hardware.
 
 ### Medium-term (3-6 months)
 - [x] FeaturedSpace and model training
-- [ ] Spatial data I/O with GDAL
+- [x] Spatial data I/O (ASC, CSV)
 - [ ] Model evaluation (AUC, metrics)
 - [ ] Complete R workflow examples
 
