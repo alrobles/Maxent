@@ -91,6 +91,8 @@ cpp/Testing/
 *.app
 cpp/tests/test_grid
 cpp/tests/test_sample
+cpp/tests/test_feature
+cpp/tests/test_featured_space
 
 # =========================
 # R Package Files

@@ -36,6 +36,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdexcept>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 
 namespace maxent {
 
@@ -415,10 +416,8 @@ public:
         if (!out)
             throw std::runtime_error("write_lambdas: cannot open: " + filename);
 
-        bool written = false;
+        out << std::setprecision(17);
         for (const auto& f : features_) {
-            if (f->lambda() == 0.0 && written) continue;
-            written = true;
             out << f->name() << ", " << f->lambda() << ", "
                 << f->min_val() << ", " << f->max_val() << "\n";
         }
