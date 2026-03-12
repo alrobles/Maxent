@@ -35,14 +35,15 @@ devtools::install("path/to/R-package")
 library(maxentcpp)
 
 # Create a sample point
-sample <- create_sample(
+sample <- maxent_sample(
   lon = -118.5,
   lat = 36.5,
-  name = "location1"
+  name = "location1",
+  dim = maxent_dimension(100, 100, -120.0, 35.0, 0.1)
 )
 
 # Create a grid for environmental variables
-dim <- create_grid_dimension(
+dim <- maxent_dimension(
   nrows = 100,
   ncols = 100,
   xll = -120.0,
@@ -50,9 +51,18 @@ dim <- create_grid_dimension(
   cellsize = 0.1
 )
 
-grid <- create_grid_float(dim, "temperature")
+grid <- maxent_grid(dim, "temperature")
 
-# More functionality coming soon...
+# Read an ESRI ASCII raster file
+# g <- maxent_read_asc("bio1.asc")
+
+# Write occurrence data to CSV
+w <- maxent_csv_write_open("occurrences.csv")
+maxent_csv_write(w, "species", "Quercus agrifolia")
+maxent_csv_write_num(w, "longitude", -118.5)
+maxent_csv_write_num(w, "latitude",  36.5)
+maxent_csv_write_row(w)
+maxent_csv_write_close(w)
 ```
 
 ## Development Status
@@ -61,11 +71,14 @@ This package is under active development. Current status:
 
 - [x] Core data structures (Sample, Grid, GridDimension)
 - [x] R bindings for core structures
-- [ ] Feature classes (Linear, Quadratic, Product, etc.)
-- [ ] Model training (FeaturedSpace)
-- [ ] Model evaluation and prediction
-- [ ] Spatial data I/O (GDAL integration)
-- [ ] Complete workflow examples
+- [x] Feature classes (Linear, Quadratic, Product, Threshold, Hinge)
+- [x] Model training (FeaturedSpace, sequential coordinate ascent)
+- [x] Lambda file I/O (model persistence)
+- [x] Spatial data I/O (ESRI ASCII .asc read/write)
+- [x] CSV reader/writer (occurrence data, SWD files)
+- [x] Environmental layer metadata (Layer class)
+- [ ] Model evaluation (AUC, metrics) – Phase 5
+- [ ] Spatial projection – Phase 5
 
 ## Contributing
 

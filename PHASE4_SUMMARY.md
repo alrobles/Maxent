@@ -27,8 +27,8 @@ and `density/Layer.java` to modern C++17 with corresponding R bindings.
 | `cpp/tests/test_csv_writer.cpp` | ~130 | 5 C++ unit tests for CsvWriter |
 | `cpp/tests/test_grid_io.cpp` | ~230 | 10 C++ unit tests for GridIO |
 | `R-package/src/rcpp_grid_io.cpp` | ~280 | Rcpp bindings for all I/O operations |
-| `R-package/R/grid_io.R` | ~170 | 13 user-friendly R wrapper functions |
-| `R-package/tests/testthat/test-grid-io.R` | ~140 | 8 R testthat tests |
+| `R-package/R/grid_io.R` | ~250 | 18 user-friendly R wrapper functions (incl. CsvWriter) |
+| `R-package/tests/testthat/test-grid-io.R` | ~230 | 11 R testthat tests (incl. 3 CsvWriter tests) |
 | `PHASE4_SUMMARY.md` | — | This file |
 
 ### Modified Files
@@ -38,8 +38,10 @@ and `density/Layer.java` to modern C++17 with corresponding R bindings.
 | `cpp/CMakeLists.txt` | Added 4 new source files to `MAXENT_SOURCES` |
 | `cpp/tests/CMakeLists.txt` | Added 4 new test executables and `add_test()` calls |
 | `R-package/DESCRIPTION` | Bumped version from 0.3.0 → 0.4.0 |
-| `R-package/NAMESPACE` | Added 20+ new exported functions |
+| `R-package/NAMESPACE` | Added 25+ new exported functions (incl. CsvWriter wrappers) |
+| `R-package/README.md` | Updated development status to reflect Phase 4 completion |
 | `MIGRATION.md` | Phase 4 marked as ✅ Completed; directory structure updated |
+| `QUICKSTART.md` | Updated status, added Phase 4 I/O examples |
 
 ## Key Design Decisions
 
@@ -132,12 +134,19 @@ maxent_write_asc(g, "output.asc")           # Write
 # Build grid from R matrix
 g2 <- maxent_grid_from_matrix(mat, xll = -120, yll = 35, cellsize = 0.1)
 
-# --- CSV ---
+# --- CSV Reader ---
 reader <- maxent_csv_open("occurrences.csv")
 hdrs   <- maxent_csv_headers(reader)
 rec    <- maxent_csv_next(reader)           # Next row as character vector
 temps  <- maxent_csv_read_column(reader, "temperature")
 maxent_csv_close(reader)
+
+# --- CSV Writer ---
+w <- maxent_csv_write_open("results.csv")
+maxent_csv_write(w, "species", "oak")       # String value
+maxent_csv_write_num(w, "score", 0.85)      # Numeric value
+maxent_csv_write_row(w)                     # Flush row
+maxent_csv_write_close(w)
 
 # --- Layer ---
 l    <- maxent_layer("bio1", "Continuous")
@@ -162,13 +171,15 @@ name <- maxent_layer_name("/data/bio1.asc")  # "bio1"
 
 ### R Tests
 
-8 new testthat tests in `test-grid-io.R` covering:
+11 testthat tests in `test-grid-io.R` covering:
 - Layer creation and type parsing
 - Layer name extraction from path
 - ASC write/read round-trip with nodata
 - Auto-format detection
 - CSV reader: headers, records, EOF
 - CSV read_double_column
+- **CSV writer: string and numeric values, round-trip precision**
+- **CSV writer: append mode**
 - Grid from/to matrix round-trip with NA
 - Grid metadata inspection
 

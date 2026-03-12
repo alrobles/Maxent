@@ -174,3 +174,71 @@ maxent_layer_info <- function(layer) {
 maxent_layer_name <- function(path) {
     layer_name_from_path(as.character(path))
 }
+
+#' Open a CSV File for Writing
+#'
+#' Opens a CSV file and returns a writer object. Use \code{\link{maxent_csv_write}},
+#' \code{\link{maxent_csv_write_num}}, \code{\link{maxent_csv_write_row}}, and
+#' \code{\link{maxent_csv_write_close}} to write data and close the file.
+#'
+#' @param filename   Character: output file path.
+#' @param append     Logical: append to an existing file (default \code{FALSE}).
+#' @param precision  Integer: number of decimal places for numeric values
+#'   (default \code{4}).
+#' @return External pointer to a CsvWriter C++ object.
+#' @export
+maxent_csv_write_open <- function(filename, append = FALSE, precision = 4L) {
+    csv_writer_open(as.character(filename), as.logical(append),
+                    as.integer(precision))
+}
+
+#' Write a String Value to the Current CSV Row
+#'
+#' Adds a \code{column = value} pair (as a character string) to the current
+#' row buffer. Call \code{\link{maxent_csv_write_row}} to flush the row.
+#'
+#' @param writer  External pointer to a CsvWriter object.
+#' @param column  Character: column name.
+#' @param value   Character: value to write.
+#' @export
+maxent_csv_write <- function(writer, column, value) {
+    csv_writer_print(writer, as.character(column), as.character(value))
+    invisible(writer)
+}
+
+#' Write a Numeric Value to the Current CSV Row
+#'
+#' Adds a \code{column = value} pair (as a double) to the current row buffer.
+#' Call \code{\link{maxent_csv_write_row}} to flush the row.
+#'
+#' @param writer  External pointer to a CsvWriter object.
+#' @param column  Character: column name.
+#' @param value   Numeric: value to write.
+#' @export
+maxent_csv_write_num <- function(writer, column, value) {
+    csv_writer_print_double(writer, as.character(column), as.double(value))
+    invisible(writer)
+}
+
+#' Flush the Current Row to the CSV File
+#'
+#' Writes all buffered column values as a single CSV row and starts a new
+#' row buffer.
+#'
+#' @param writer  External pointer to a CsvWriter object.
+#' @export
+maxent_csv_write_row <- function(writer) {
+    csv_writer_println(writer)
+    invisible(writer)
+}
+
+#' Close a CSV Writer
+#'
+#' Flushes any pending data and closes the CSV file.
+#'
+#' @param writer  External pointer to a CsvWriter object.
+#' @export
+maxent_csv_write_close <- function(writer) {
+    csv_writer_close(writer)
+    invisible(NULL)
+}
