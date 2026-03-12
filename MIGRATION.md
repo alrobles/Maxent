@@ -36,12 +36,26 @@ This document describes the ongoing migration of Maxent from Java to C++ with R 
 - ✅ R wrapper functions (`features.R`)
 - ✅ Unit tests with testthat (`test-features.R`)
 
-### Phase 3: Core Algorithm (Planned)
+### Phase 3: Core Algorithm ✅ (Completed)
 
-- [ ] `FeaturedSpace` - Maximum entropy optimization
-- [ ] Model training functionality
-- [ ] Lambda (weight) optimization using L-BFGS
-- [ ] R interface for model training
+**C++ Core:**
+- ✅ `FeaturedSpace` class – core MaxEnt optimization with Gibbs distribution
+- ✅ `SampleInfo` and `Interval` helper structs for regularization
+- ✅ `TrainResult` struct for training output
+- ✅ Sequential coordinate-ascent training loop (ported from `Sequential.java`)
+- ✅ `set_linear_predictor()`, `set_density()`, `increase_lambda()` core methods
+- ✅ `set_sample_expectations()` with regularization (beta multiplier)
+- ✅ `get_loss()`, `get_entropy()`, `get_weights()` output methods
+- ✅ `predict()` for inference on new data
+- ✅ `write_lambdas()` / `read_lambdas()` for .lambdas file I/O
+- ✅ C++ unit tests (`test_featured_space.cpp`)
+
+**R Package (maxentcpp):**
+- ✅ Rcpp bindings (`rcpp_featured_space.cpp`)
+- ✅ R wrapper functions (`featured_space.R`)
+- ✅ Unit tests with testthat (`test-featured-space.R`)
+- ✅ NAMESPACE updated with new exports
+- ✅ DESCRIPTION bumped to v0.3.0
 
 ### Phase 4: Spatial I/O (Planned)
 
@@ -66,30 +80,36 @@ Maxent/
 │   │   ├── grid_dimension.hpp
 │   │   ├── sample.hpp
 │   │   ├── grid.hpp
-│   │   └── feature.hpp
-│   ├── src/                 # Implementation files
+│   │   ├── feature.hpp
+│   │   └── featured_space.hpp
+│   ├── src/                 # Implementation files (stubs; code is header-only)
 │   │   ├── grid_dimension.cpp
 │   │   ├── sample.cpp
-│   │   └── grid.cpp
+│   │   ├── grid.cpp
+│   │   └── featured_space.cpp
 │   ├── tests/               # C++ unit tests
 │   │   ├── test_grid.cpp
 │   │   ├── test_sample.cpp
-│   │   └── test_feature.cpp
+│   │   ├── test_feature.cpp
+│   │   └── test_featured_space.cpp
 │   └── CMakeLists.txt       # Build configuration
 │
 ├── R-package/               # R package with Rcpp bindings
 │   ├── src/                 # Rcpp wrapper code
 │   │   ├── rcpp_maxent.cpp
 │   │   ├── rcpp_features.cpp
+│   │   ├── rcpp_featured_space.cpp
 │   │   ├── Makevars
 │   │   └── Makevars.win
 │   ├── R/                   # R code
 │   │   ├── maxent.R
-│   │   └── features.R
+│   │   ├── features.R
+│   │   └── featured_space.R
 │   ├── tests/               # R unit tests
 │   │   └── testthat/
 │   │       ├── test-maxent.R
-│   │       └── test-features.R
+│   │       ├── test-features.R
+│   │       └── test-featured-space.R
 │   ├── man/                 # Documentation
 │   ├── DESCRIPTION
 │   ├── NAMESPACE
@@ -396,7 +416,7 @@ Actual performance will vary based on dataset size and hardware.
 - [x] R interface for features
 
 ### Medium-term (3-6 months)
-- [ ] FeaturedSpace and model training
+- [x] FeaturedSpace and model training
 - [ ] Spatial data I/O with GDAL
 - [ ] Model evaluation (AUC, metrics)
 - [ ] Complete R workflow examples
