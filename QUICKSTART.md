@@ -352,18 +352,33 @@ ctest --verbose
 
 ## Next Steps
 
-Phase 5 will add:
+Future phases will add:
 
-1. **AUC calculation** and other model evaluation metrics
-2. **Spatial projection** of trained models to new areas
-3. **Complete end-to-end workflow** examples
+1. **Complete end-to-end workflow** examples
+2. **Performance optimization** for large datasets
+3. **CRAN release** of the R package
 
-Example (Phase 5 - Coming Soon):
+### Example: Model Evaluation (Phase 5)
 
 ```r
-# This will be available in Phase 5
-auc <- maxent_auc(model, test_samples)
-predictions <- maxent_spatial_predict(model, layer_files)
+library(maxentcpp)
+
+# Prediction scores at presence and absence sites
+presence_scores <- c(0.85, 0.92, 0.78, 0.96, 0.88)
+absence_scores  <- c(0.12, 0.25, 0.08, 0.35, 0.18)
+
+# Compute AUC
+auc_result <- maxent_auc(presence_scores, absence_scores)
+cat("AUC:", auc_result$auc, "\n")
+cat("Max Kappa:", auc_result$max_kappa, "\n")
+
+# Full model evaluation
+metrics <- maxent_evaluate(presence_scores, absence_scores)
+cat("AUC:", metrics$auc, "\n")
+cat("Correlation:", metrics$correlation, "\n")
+cat("Log-loss:", metrics$logloss, "\n")
+cat("Squared Error:", metrics$square_error, "\n")
+cat("Misclassification:", metrics$misclassification, "\n")
 ```
 
 ## Troubleshooting
@@ -463,7 +478,7 @@ points_df <- do.call(rbind, lapply(samples, function(s) {
 }))
 ```
 
-## What's Implemented (Phase 4)
+## What's Implemented (Phase 5)
 
 ✅ Core data structures (Sample, Grid, GridDimension)  
 ✅ Coordinate transformations  
@@ -477,12 +492,14 @@ points_df <- do.call(rbind, lapply(samples, function(s) {
 ✅ Spatial data I/O (ESRI ASCII .asc read/write)  
 ✅ CSV reader/writer (occurrence data, SWD files)  
 ✅ Environmental layer metadata (Layer class)  
-✅ Unit tests (8 C++ test suites, R testthat tests)  
+✅ Model evaluation (AUC, kappa, correlation, log-loss, squared error)  
+✅ Spatial projection (raw, cloglog, logistic output)  
+✅ Unit tests (10 C++ test suites, R testthat tests)  
 
-## Coming in Phase 5
+## Coming Next
 
-⏳ AUC calculation and model evaluation metrics  
-⏳ Predictions on new spatial areas  
-⏳ Complete workflow examples  
+⏳ Complete end-to-end workflow examples  
+⏳ Performance optimization  
+⏳ CRAN release of R package
 
 See `MIGRATION.md` for the complete roadmap!

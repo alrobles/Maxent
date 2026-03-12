@@ -28,6 +28,8 @@ set(MAXENT_SOURCES
     src/csv_reader.cpp
     src/csv_writer.cpp
     src/grid_io.cpp
+    src/model_evaluation.cpp
+    src/projection.cpp
 )
 
 # Create library
