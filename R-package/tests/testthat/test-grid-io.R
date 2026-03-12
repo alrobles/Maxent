@@ -153,3 +153,86 @@ test_that("grid_float_info returns correct metadata", {
     expect_equal(info$name, "testgrid")
     expect_equal(info$count_data, 12)
 })
+
+test_that("CSV writer writes string and numeric values", {
+    skip_if_not_installed("maxentcpp")
+
+    tmp <- tempfile(fileext = ".csv")
+    on.exit(unlink(tmp), add = TRUE)
+
+    w <- maxent_csv_write_open(tmp)
+    maxent_csv_write(w, "species", "oak")
+    maxent_csv_write_num(w, "score", 0.85)
+    maxent_csv_write_row(w)
+    maxent_csv_write(w, "species", "pine")
+    maxent_csv_write_num(w, "score", 0.72)
+    maxent_csv_write_row(w)
+    maxent_csv_write_close(w)
+
+    # Verify the written file
+    reader <- maxent_csv_open(tmp)
+    hdrs   <- maxent_csv_headers(reader)
+    expect_equal(length(hdrs), 2)
+    expect_true("species" %in% hdrs)
+    expect_true("score" %in% hdrs)
+
+    rec1 <- maxent_csv_next(reader)
+    expect_equal(rec1[which(hdrs == "species")], "oak")
+
+    rec2 <- maxent_csv_next(reader)
+    expect_equal(rec2[which(hdrs == "species")], "pine")
+
+    maxent_csv_close(reader)
+})
+
+test_that("CSV writer round-trip preserves numeric precision", {
+    skip_if_not_installed("maxentcpp")
+
+    tmp <- tempfile(fileext = ".csv")
+    on.exit(unlink(tmp), add = TRUE)
+
+    values <- c(1.2345, 98.7654, -0.0001)
+
+    w <- maxent_csv_write_open(tmp, precision = 4L)
+    for (v in values) {
+        maxent_csv_write_num(w, "value", v)
+        maxent_csv_write_row(w)
+    }
+    maxent_csv_write_close(w)
+
+    reader <- maxent_csv_open(tmp)
+    result <- maxent_csv_read_column(reader, "value")
+    maxent_csv_close(reader)
+
+    expect_equal(length(result), 3)
+    expect_equal(result[1], 1.2345, tolerance = 1e-4)
+    expect_equal(result[2], 98.7654, tolerance = 1e-4)
+    expect_equal(result[3], -0.0001, tolerance = 1e-4)
+})
+
+test_that("CSV writer append mode adds rows to existing file", {
+    skip_if_not_installed("maxentcpp")
+
+    tmp <- tempfile(fileext = ".csv")
+    on.exit(unlink(tmp), add = TRUE)
+
+    # Write first batch
+    w1 <- maxent_csv_write_open(tmp, append = FALSE)
+    maxent_csv_write(w1, "name", "alpha")
+    maxent_csv_write_row(w1)
+    maxent_csv_write_close(w1)
+
+    # Append second batch
+    w2 <- maxent_csv_write_open(tmp, append = TRUE)
+    maxent_csv_write(w2, "name", "beta")
+    maxent_csv_write_row(w2)
+    maxent_csv_write_close(w2)
+
+    reader <- maxent_csv_open(tmp)
+    rec1 <- maxent_csv_next(reader)
+    rec2 <- maxent_csv_next(reader)
+    maxent_csv_close(reader)
+
+    expect_equal(rec1[1], "alpha")
+    expect_equal(rec2[1], "beta")
+})

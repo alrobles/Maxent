@@ -213,6 +213,72 @@ dim_info <- get_grid_dimension_info(dim)
 print(dim_info)
 ```
 
+### Example 6: Spatial I/O – Read and Write ASC Grids (Phase 4)
+
+```r
+library(maxentcpp)
+
+# Build a small grid from an R matrix
+mat <- matrix(c(20.5, 21.0, 19.8,
+                22.1, NA,   18.3), nrow = 2, byrow = TRUE)
+
+g <- maxent_grid_from_matrix(mat,
+                              xll = -120.0, yll = 35.0,
+                              cellsize = 0.1, name = "temperature")
+
+# Write to ESRI ASCII format
+maxent_write_asc(g, "temperature.asc", scientific = FALSE)
+
+# Read it back
+g2   <- maxent_read_asc("temperature.asc")
+info <- maxent_grid_info(g2)
+print(info)  # nrows=2, ncols=3, count_data=5
+
+mat2 <- maxent_grid_to_matrix(g2)
+print(mat2)  # NA cell preserved
+```
+
+### Example 7: CSV I/O – Write and Read Occurrence Data (Phase 4)
+
+```r
+library(maxentcpp)
+
+# ---- Write occurrence records ----
+w <- maxent_csv_write_open("occurrences.csv")
+for (i in seq_len(3)) {
+    maxent_csv_write(w, "species", "Quercus agrifolia")
+    maxent_csv_write_num(w, "longitude", -118.0 - i * 0.5)
+    maxent_csv_write_num(w, "latitude",  36.0 + i * 0.1)
+    maxent_csv_write_row(w)
+}
+maxent_csv_write_close(w)
+
+# ---- Read it back ----
+reader <- maxent_csv_open("occurrences.csv")
+hdrs   <- maxent_csv_headers(reader)
+print(hdrs)  # "species" "longitude" "latitude"
+
+while (!is.null(rec <- maxent_csv_next(reader))) {
+    print(rec)
+}
+maxent_csv_close(reader)
+
+# ---- Read a numeric column directly ----
+reader2 <- maxent_csv_open("occurrences.csv")
+lons    <- maxent_csv_read_column(reader2, "longitude")
+maxent_csv_close(reader2)
+print(lons)
+
+# ---- Layer metadata ----
+l    <- maxent_layer("temperature", "Continuous")
+info <- maxent_layer_info(l)
+print(info)  # $name="temperature" $type="Continuous"
+
+# Extract name from a file path
+name <- maxent_layer_name("/data/bio1.asc")
+print(name)  # "bio1"
+```
+
 ## Integration with Existing R Packages
 
 ### Using with raster package
@@ -286,25 +352,18 @@ ctest --verbose
 
 ## Next Steps
 
-Once Phase 2 is complete, you'll be able to:
+Phase 5 will add:
 
-1. **Create features** from environmental grids (linear, quadratic, product, etc.)
-2. **Train MaxEnt models** using presence-only data
-3. **Evaluate models** with AUC and other metrics
-4. **Make predictions** on new areas
+1. **AUC calculation** and other model evaluation metrics
+2. **Spatial projection** of trained models to new areas
+3. **Complete end-to-end workflow** examples
 
-Example (Phase 2 - Coming Soon):
+Example (Phase 5 - Coming Soon):
 
 ```r
-# This will be available in Phase 2
-model <- maxent_train(
-  samples = samples,
-  grids = list(temp_grid, precip_grid, elev_grid),
-  features = c("linear", "quadratic", "product"),
-  regularization = 1.0
-)
-
-predictions <- maxent_predict(model, new_grids)
+# This will be available in Phase 5
+auc <- maxent_auc(model, test_samples)
+predictions <- maxent_spatial_predict(model, layer_files)
 ```
 
 ## Troubleshooting
@@ -404,7 +463,7 @@ points_df <- do.call(rbind, lapply(samples, function(s) {
 }))
 ```
 
-## What's Implemented (Phase 1)
+## What's Implemented (Phase 4)
 
 ✅ Core data structures (Sample, Grid, GridDimension)  
 ✅ Coordinate transformations  
@@ -412,13 +471,18 @@ points_df <- do.call(rbind, lapply(samples, function(s) {
 ✅ Matrix conversions  
 ✅ Feature storage on samples  
 ✅ R/C++ integration via Rcpp  
-✅ Unit tests  
+✅ Feature classes (Linear, Quadratic, Product, Threshold, Hinge)  
+✅ Model training (FeaturedSpace, sequential coordinate ascent)  
+✅ Lambda file I/O (model persistence)  
+✅ Spatial data I/O (ESRI ASCII .asc read/write)  
+✅ CSV reader/writer (occurrence data, SWD files)  
+✅ Environmental layer metadata (Layer class)  
+✅ Unit tests (8 C++ test suites, R testthat tests)  
 
-## Coming in Phase 2
+## Coming in Phase 5
 
-⏳ Feature classes (Linear, Quadratic, Product, Threshold, Hinge)  
-⏳ Maximum entropy model training  
-⏳ Model evaluation (AUC)  
-⏳ Predictions  
+⏳ AUC calculation and model evaluation metrics  
+⏳ Predictions on new spatial areas  
+⏳ Complete workflow examples  
 
 See `MIGRATION.md` for the complete roadmap!
