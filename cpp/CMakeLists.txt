@@ -24,6 +24,10 @@ set(MAXENT_SOURCES
     src/grid.cpp
     src/grid_dimension.cpp
     src/featured_space.cpp
+    src/layer.cpp
+    src/csv_reader.cpp
+    src/csv_writer.cpp
+    src/grid_io.cpp
 )
 
 # Create library
