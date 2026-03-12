@@ -30,6 +30,10 @@ set(MAXENT_SOURCES
     src/grid_io.cpp
     src/model_evaluation.cpp
     src/projection.cpp
+    src/variable_importance.cpp
+    src/response_curve.cpp
+    src/clamping.cpp
+    src/novelty.cpp
 )
 
 # Create library
